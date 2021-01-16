@@ -44,7 +44,7 @@ void setup() {
     Serial.print(" NOT FOUND.");
   }
  
- //增加 删除
+ //增加 删除 
   // File dataFile = SPIFFS.open(file_name, "a");// 建立File对象用于向SPIFFS中的file对象（即/notes.txt）写入信息
   //   dataFile.println("This is Appended Info."); // 向dataFile添加字符串信息
   //   dataFile.close();                           // 完成文件操作后关闭文件   
