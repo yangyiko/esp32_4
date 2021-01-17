@@ -1,4 +1,7 @@
 // /**********************************************************************
+//  * http://www.taichi-maker.com/homepage/esp8266-nodemcu-iot/iot-c/esp8266-tips/esp8266-ota/
+//  * https://www.bilibili.com/video/BV1L7411c7jw?p=23
+//  * 
 // 项目名称/Project          : 零基础入门学用物联网
 // 程序名称/Program name     : OTA_Flash_Example
 // 团队/Team                : 太极创客团队 / Taichi-Maker (www.taichi-maker.com)
@@ -40,6 +43,7 @@
 //   WiFi.begin(ssid, password);
  
 //   //等待WiFi连接,连接成功打印IP
+//   Serial.print("开始连接AP ssid="+String(ssid)+" password="+String(password));
 //   while (WiFi.status() != WL_CONNECTED) {
 //     delay(1000);
 //     Serial.print(".");
@@ -60,13 +64,13 @@
 //   connectWifi();
 
 //   // OTA设置并启动
-//   ArduinoOTA.setHostname("ESP8266");
+//   ArduinoOTA.setHostname("ESP32-S");
 //   ArduinoOTA.setPassword("12345678");
 //   ArduinoOTA.begin();
   
 //   Serial.println("OTA ready");
 // }
 // void loop() {
-//   ArduinoOTA.handle();
+//   ArduinoOTA.handle();//必须放在loop中
 // }
 
