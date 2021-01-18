@@ -3,8 +3,8 @@
  * 
  * 视频
  * https://www.bilibili.com/video/BV1L7411c7jw?p=23
- * 
-项目名称/Project          : 零基础入门学用物联网
+ *  
+项目名称/Project          : 零基础入门学用物联网 
 程序名称/Program name     : OTA_Flash_Example
 团队/Team                : 太极创客团队 / Taichi-Maker (www.taichi-maker.com)
 作者/Author              : CYNO朔
@@ -35,7 +35,7 @@ const char* password = "acwkxq9k";
 
 Ticker ticker;
 
-// 在Tinker对象控制下，此函数将会定时执行。
+// 在Tinker对象控制下，此函数将会定时执的行。
 void tickerCount(){
   digitalWrite(LED_BUILTIN, !digitalRead(LED_BUILTIN));
 }
