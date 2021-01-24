@@ -21,17 +21,19 @@
 */
 
 // constants won't change. They're used here to set pin numbers:
-const int buttonPin = 25;     // the number of the pushbutton pin
-const int ledPin =  13;      // the number of the LED pin
+const int buttonPin = 36;     //SVR 管脚不支持上拉输入，但其它的管脚可以
+// const int buttonPin = 39;     //SVN
+//const int ledPin =  13;      // the number of the LED pin
 
 // variables will change:
 int buttonState = 0;         // variable for reading the pushbutton status
 
 void setup() {
   // initialize the LED pin as an output:
-  pinMode(ledPin, OUTPUT);
+  pinMode(LED_BUILTIN, OUTPUT);
   // initialize the pushbutton pin as an input:
   pinMode(buttonPin, INPUT_PULLUP);
+  //pinMode(buttonPin, INPUT);
   Serial.begin(9600);
 }
 
@@ -42,11 +44,13 @@ void loop() {
   // check if the pushbutton is pressed. If it is, the buttonState is HIGH:
   if (buttonState == LOW) {
     // turn LED on:
-    digitalWrite(ledPin, HIGH);
+    digitalWrite(LED_BUILTIN, HIGH);
     Serial.println(1);
-  } else {
+  } 
+  if (buttonState == HIGH)  {
     // turn LED off:
-    digitalWrite(ledPin, LOW);
+    digitalWrite(LED_BUILTIN, LOW);
     Serial.println(0);
   }
+  delay(10);
 }
