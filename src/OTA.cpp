@@ -1,78 +1,56 @@
-/**********************************************************************
- * http://www.taichi-maker.com/homepage/esp8266-nodemcu-iot/iot-c/esp8266-tips/esp8266-ota/
- * 
- * 视频
- * https://www.bilibili.com/video/BV1L7411c7jw?p=23
- * 
-项目名称/Project          : 零基础入门学用物联网
-程序名称/Program name     : OTA_Flash_Example
-团队/Team                : 太极创客团队 / Taichi-Maker (www.taichi-maker.com)
-作者/Author              : CYNO朔
-日期/Date（YYYYMMDD）     : 20200713
-程序目的/Purpose          : 
-本示例程序用于演示ESP8266的OTA功能。通过本程序，我们将启动ESP8266的OTA程序上传功能。
-我们将无需使用连接线将ESP8266与电脑进行连接，而可以使用WiFi对ESP8266上传程序。
 
-如需了解本程序的详细说明，请参考以下链接：
-http://www.taichi-maker.com/homepage/esp8266-nodemcu-iot/iot-c/esp8266-tips/esp8266-ota/
------------------------------------------------------------------------
-其它说明 / Other Description：
-本程序为太极创客团队制作的免费视频教程《零基础入门学用物联网 》中一部分。该教程系统的
-向您讲述ESP8266的物联网应用相关的软件和硬件知识。以下是该教程目录页：
-http://www.taichi-maker.com/homepage/esp8266-nodemcu-iot/                    
-***********************************************************************/
 #include <Arduino.h>
-#include <WiFi.h>
-#include <ArduinoOTA.h>
-#include <Ticker.h>
+/*
+  Button
 
-// 闪烁时间间隔(秒)
-const int blinkInterval = 2; 
+  Turns on and off a light emitting diode(LED) connected to digital pin 13,
+  when pressing a pushbutton attached to pin 2.
 
-// 设置wifi接入信息(请根据您的WiFi信息进行修改)
-const char* ssid = "TP-LINK_yangyi";
-const char* password = "acwkxq9k";
+  The circuit:
+  - LED attached from pin 13 to ground
+  - pushbutton attached to pin 2 from +5V
+  - 10K resistor attached to pin 2 from ground
 
-Ticker ticker;
+  - Note: on most Arduinos there is already an LED on the board
+    attached to pin 13.
 
-// 在Tinker对象控制下，此函数将会定时执行。
-void tickerCount(){
-  digitalWrite(LED_BUILTIN, !digitalRead(LED_BUILTIN));
-}
+  created 2005
+  by DojoDave <http://www.0j0.org>
+  modified 30 Aug 2011
+  by Tom Igoe
 
-void connectWifi(){
-  //开始连接wifi
-  WiFi.begin(ssid, password);
- 
-  //等待WiFi连接,连接成功打印IP
-  Serial.print("开始连接AP ssid="+String(ssid)+" password="+String(password));
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(1000);
-    Serial.print(".");
-  }
-  Serial.println("");
-  Serial.println("WiFi Connected!");  
-  Serial.print("IP address:\t");            
-  Serial.println(WiFi.localIP());          
-}
+  This example code is in the public domain.
+
+  http://www.arduino.cc/en/Tutorial/Button
+*/
+
+// constants won't change. They're used here to set pin numbers:
+const int buttonPin = 25;     // the number of the pushbutton pin
+const int ledPin =  13;      // the number of the LED pin
+
+// variables will change:
+int buttonState = 0;         // variable for reading the pushbutton status
 
 void setup() {
-  Serial.begin(9600);            
-  Serial.println("");
-  pinMode(LED_BUILTIN, OUTPUT);
-
-  ticker.attach(blinkInterval, tickerCount);  // 设置Ticker对象
-  
-  connectWifi();
-
-  // OTA设置并启动
-  ArduinoOTA.setHostname("ESP32-S");
-  ArduinoOTA.setPassword("12345678");
-  ArduinoOTA.begin();
-  
-  Serial.println("OTA ready");
+  // initialize the LED pin as an output:
+  pinMode(ledPin, OUTPUT);
+  // initialize the pushbutton pin as an input:
+  pinMode(buttonPin, INPUT_PULLUP);
+  Serial.begin(9600);
 }
+
 void loop() {
-  ArduinoOTA.handle();//必须放在loop中
-}
+  // read the state of the pushbutton value:
+  buttonState = digitalRead(buttonPin);
 
+  // check if the pushbutton is pressed. If it is, the buttonState is HIGH:
+  if (buttonState == LOW) {
+    // turn LED on:
+    digitalWrite(ledPin, HIGH);
+    Serial.println(1);
+  } else {
+    // turn LED off:
+    digitalWrite(ledPin, LOW);
+    Serial.println(0);
+  }
+}
