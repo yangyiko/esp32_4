@@ -15,6 +15,7 @@
 // 向您讲述ESP8266的物联网应用相关的软件和硬件知识。以下是该教程目录页：
 // http://www.taichi-maker.com/homepage/esp8266-nodemcu-iot/                    
 // ***********************************************************************/
+// #include <Arduino.h>
 // #include <Ticker.h>
 // #include <analogWrite.h>
 
