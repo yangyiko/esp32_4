@@ -1,56 +1,102 @@
+/*
+ * IRremoteESP8266: IRrecvDump - dump details of IR codes with IRrecv
+ * Copyright 2009 Ken Shirriff, http://arcfn.com
+ *
+ ***** DEPRECATED - DO NOT USE *****
+ * Unless you know what you are doing, you should be using the
+ * IRrecvDumpV2.ino sketch/example instead for capturing & decoding IR messages.
+ * In almost ALL ways it is BETTER, FASTER, and MORE DETAILED.
+ *
+ * This code is left only for legacy reasons, and as another simple example of
+ * how to use the IRremoteESP8266 library.
+ *
+ * As of November 2017 it will no longer be updated or supported.
+ * You have been warned.
+ ***** DEPRECATED - DO NOT USE *****
+ *
+ * An IR detector/demodulator must be connected to the input RECV_PIN.
+ * Version 0.2 Oct 2017
+ * Based on Ken Shirriff's IrsendDemo Version 0.1 July, 2009,
+ * JVC and Panasonic protocol added by Kristian Lauszus
+ *   (Thanks to zenwheel and other people at the original blog post)
+ * LG added by Darryl Smith (based on the JVC protocol)
+ */
 
 #include <Arduino.h>
-/*
-  Button
+#include <IRremoteESP8266.h>
+#include <IRrecv.h>
+#include <IRutils.h>
 
-  Turns on and off a light emitting diode(LED) connected to digital pin 13,
-  when pressing a pushbutton attached to pin 2.
+// an IR detector/demodulator is connected to GPIO pin 2
+uint16_t RECV_PIN = 9;
 
-  The circuit:
-  - LED attached from pin 13 to ground
-  - pushbutton attached to pin 2 from +5V
-  - 10K resistor attached to pin 2 from ground
+IRrecv irrecv(RECV_PIN);
 
-  - Note: on most Arduinos there is already an LED on the board
-    attached to pin 13.
-
-
-  This example code is in the public domain.
-
-  http://www.arduino.cc/en/Tutorial/Button
-*/
-
-// constants won't change. They're used here to set pin numbers:
-const int buttonPin = 36;     //SVR 管脚不支持上拉输入，但其它的管脚可以
-// const int buttonPin = 39;     //SVN
-//const int ledPin =  13;      // the number of the LED pin
-
-// variables will change:
-int buttonState = 0;         // variable for reading the pushbutton status
+decode_results results;
 
 void setup() {
-  // initialize the LED pin as an output:
-  pinMode(LED_BUILTIN, OUTPUT);
-  // initialize the pushbutton pin as an input:
-  pinMode(buttonPin, INPUT_PULLUP);
-  //pinMode(buttonPin, INPUT);
-  Serial.begin(9600);
+  Serial.begin(115200);
+  irrecv.enableIRIn();  // Start the receiver
+}
+
+void dump(decode_results *results) {
+  // Dumps out the decode_results structure.
+  // Call this after IRrecv::decode()
+  uint16_t count = results->rawlen;
+  if (results->decode_type == UNKNOWN) {
+    Serial.print("Unknown encoding: ");
+  } else if (results->decode_type == NEC) {
+    Serial.print("Decoded NEC: ");
+  } else if (results->decode_type == SONY) {
+    Serial.print("Decoded SONY: ");
+  } else if (results->decode_type == RC5) {
+    Serial.print("Decoded RC5: ");
+  } else if (results->decode_type == RC5X) {
+    Serial.print("Decoded RC5X: ");
+  } else if (results->decode_type == RC6) {
+    Serial.print("Decoded RC6: ");
+  } else if (results->decode_type == RCMM) {
+    Serial.print("Decoded RCMM: ");
+  } else if (results->decode_type == PANASONIC) {
+    Serial.print("Decoded PANASONIC - Address: ");
+    Serial.print(results->address, HEX);
+    Serial.print(" Value: ");
+  } else if (results->decode_type == LG) {
+    Serial.print("Decoded LG: ");
+  } else if (results->decode_type == JVC) {
+    Serial.print("Decoded JVC: ");
+  } else if (results->decode_type == AIWA_RC_T501) {
+    Serial.print("Decoded AIWA RC T501: ");
+  } else if (results->decode_type == WHYNTER) {
+    Serial.print("Decoded Whynter: ");
+  } else if (results->decode_type == NIKAI) {
+    Serial.print("Decoded Nikai: ");
+  }
+  serialPrintUint64(results->value, 16);
+  Serial.print(" (");
+  Serial.print(results->bits, DEC);
+  Serial.println(" bits)");
+  Serial.print("Raw (");
+  Serial.print(count, DEC);
+  Serial.print("): {");
+
+  for (uint16_t i = 1; i < count; i++) {
+    if (i % 100 == 0)
+      yield();  // Preemptive yield every 100th entry to feed the WDT.
+    if (i & 1) {
+      Serial.print(results->rawbuf[i] * kRawTick, DEC);
+    } else {
+      Serial.print(", ");
+      Serial.print((uint32_t) results->rawbuf[i] * kRawTick, DEC);
+    }
+  }
+  Serial.println("};");
 }
 
 void loop() {
-  // read the state of the pushbutton value:
-  buttonState = digitalRead(buttonPin);
-
-  // check if the pushbutton is pressed. If it is, the buttonState is HIGH:
-  if (buttonState == LOW) {
-    // turn LED on:
-    digitalWrite(LED_BUILTIN, HIGH);
-    Serial.println(1);
-  } 
-  if (buttonState == HIGH)  {
-    // turn LED off:
-    digitalWrite(LED_BUILTIN, LOW);
-    Serial.println(0);
+  if (irrecv.decode(&results)) {
+    dump(&results);
+    Serial.println("DEPRECATED: Please use IRrecvDumpV2.ino instead!");
+    irrecv.resume();  // Receive the next value
   }
-  delay(10);
 }
